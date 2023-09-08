@@ -632,7 +632,9 @@ def force_communicator_creation(
     if all_reduce:
         one_tensor = torch.cuda.FloatTensor([1.0])
         if world_size and world_size > 1:
-            torch.distributed.all_reduce(one_tensor, op=torch.distributed.ReduceOp.SUM)
+            torch.distributed.all_reduce(
+                one_tensor, op=torch.distributed.ReduceOp.SUM, group=group
+            )
     if all_gather:
         assert (
             rank is not None and world_size is not None
@@ -640,11 +642,11 @@ def force_communicator_creation(
         tensor_list = [torch.empty_like(one_tensor) for _ in range(world_size)]
         tensor_list[rank] = one_tensor
         if world_size > 1:
-            torch.distributed.all_gather(tensor_list, one_tensor)
+            torch.distributed.all_gather(tensor_list, one_tensor, group=group)
     if broadcast:
         one_tensor = torch.cuda.FloatTensor([1.0])
         if world_size > 1:
-            torch.distributed.broadcast(one_tensor, src_rank)
+            torch.distributed.broadcast(one_tensor, src_rank, group=group)
 
 
 def force_pipeline_communicator_creation(ignore_virtual=False):
