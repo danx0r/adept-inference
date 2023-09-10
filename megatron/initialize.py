@@ -130,10 +130,10 @@ def _initialize_torch_distributed(args: argparse.Namespace):
                 args.local_rank = device
             torch.cuda.set_device(device)
     # Call the init process
-    if args.cross_block_networking or args.force_socket_networking:
-        os.environ["NCCL_NET"] = "Socket"
-    else:
-        os.environ["NCCL_NET"] = "IB"
+    # if args.cross_block_networking or args.force_socket_networking:
+    #     os.environ["NCCL_NET"] = "Socket"
+    # else:
+    #     os.environ["NCCL_NET"] = "IB"
     torch.distributed.init_process_group(
         backend=args.default_backend,
         world_size=args.world_size,

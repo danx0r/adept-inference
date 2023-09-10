@@ -582,16 +582,18 @@ class MegatronGenerate(Resource):  # type: ignore
                 (
                     response,
                     response_logprobs,
-                    _,
+                    all_tokens,
                     generations,
                     _,
                     human_readable_tokens,
                 ) = retval
 
                 end_time = datetime.datetime.now()
-                print("Query latency: ", end_time - start_time, flush=True)
+                print(all_tokens)
                 output = {
                     "text": response,
+                    "query_time_ms": (end_time - start_time).total_seconds() * 1000,
+                    "tokens_generated": sum([len(t) for t in all_tokens]),
                     "logprobs": response_logprobs,
                     "generations": generations,
                     "human_readable_tokens": human_readable_tokens,
